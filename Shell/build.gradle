@@ -1,0 +1,39 @@
+group 'softwaredesign.mit.spbau.ru'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    ext.kotlin_version = '1.0.3'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+configurations {
+    antlr4 {
+        description = "ANTLR4"
+    }
+}
+
+apply plugin: 'antlr'
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    antlr "org.antlr:antlr4:4.5"
+    compile 'com.github.jshmrsn:karg:a636b3e'
+}
+
+compileKotlin {
+    dependsOn generateGrammarSource
+}
+
