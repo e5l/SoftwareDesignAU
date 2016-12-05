@@ -2,22 +2,24 @@ package ru.spbau.mit.softwaredesign.shell
 
 import ru.spbau.mit.softwaredesign.shell.parser.expandMacroses
 import ru.spbau.mit.softwaredesign.shell.pipeline.buildPipeline
-import ru.spbau.mit.softwaredesign.shell.std.STD_COMMANDS
-
-/**
- * Test cases for grep:
- *
- */
+import ru.spbau.mit.softwaredesign.shell.std.*
 
 fun main(args: Array<String>) {
-    STD_COMMANDS.forEach { name, command -> Executor.register(name, command) }
+    val executor = ExecutorBuilder()
+            .add("wc", ::wc)
+            .add("cat", ::cat)
+            .add("exit", ::exit)
+            .add("pwd", ::pwd)
+            .add("grep", ::grep)
+            .add("version", { args, input -> Pair(0, "SDShell 2.0") })
+            .build()
 
     while (true) {
         try {
             val pipeline = buildPipeline(expandMacroses(readLine()!!, { Environment[it] }))
-            val result = Executor.executePipeline(pipeline)
+            val result = executor.executePipeline(pipeline)
 
-            if (result.second.length > 0) {
+            if (result.second.isNotEmpty()) {
                 println(result.second)
             }
 
@@ -29,3 +31,4 @@ fun main(args: Array<String>) {
         }
     }
 }
+

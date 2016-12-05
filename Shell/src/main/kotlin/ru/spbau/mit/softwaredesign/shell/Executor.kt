@@ -11,7 +11,7 @@ import ru.spbau.mit.softwaredesign.shell.utils.UnknownNodeType
  * Command line executor.
  * Store shell state and embed commands, perform shell actions.
  */
-object Executor {
+class Executor {
     private val commands = mutableMapOf<String, (Array<String>, String) -> Pair<Int, String>>()
 
     /**
@@ -46,7 +46,7 @@ object Executor {
         var result = Pair(0, "")
 
         for (command in pipeline.commands) {
-             result = execute(command, result.second)
+            result = execute(command, result.second)
 
             if (result.first != 0) {
                 if (result.first < 0) {
@@ -61,22 +61,22 @@ object Executor {
     }
 
     private fun execute(command: ExecutableNode, input: String): Pair<Int, String> = when (command) {
-            is AssignmentNode -> {
-                Environment[command.variable] = command.content
-                Pair(0, input)
-            }
-            is CommandNode -> {
-                val call = commands[command.name]?.invoke(command.args, input)
-                if (call != null) {
-                    call
-                } else {
-                    val task = "${command.name} ${command.args.joinToString(" ")}"
-                    val process = Runtime.getRuntime().exec(task)
-                    val code = process.waitFor()
-                    Pair(code, process.inputStream.reader().readText())
-                }
-            }
-            else -> throw UnknownNodeType(command.toString())
+        is AssignmentNode -> {
+            Environment[command.variable] = command.content
+            Pair(0, input)
         }
+        is CommandNode -> {
+            val call = commands[command.name]?.invoke(command.args, input)
+            if (call != null) {
+                call
+            } else {
+                val task = "${command.name} ${command.args.joinToString(" ")}"
+                val process = Runtime.getRuntime().exec(task)
+                val code = process.waitFor()
+                Pair(code, process.inputStream.reader().readText())
+            }
+        }
+        else -> throw UnknownNodeType(command.toString())
+    }
 }
 

@@ -6,18 +6,6 @@ import ru.spbau.mit.softwaredesign.shell.utils.ArgumentsException
 import java.io.FileNotFoundException
 
 /**
- * Immutable index of embed commands.
- */
-val STD_COMMANDS = hashMapOf(
-        Pair("wc", ::wc),
-        Pair("cat", ::cat),
-        Pair("echo", ::echo),
-        Pair("exit", ::exit),
-        Pair("pwd", ::pwd),
-        Pair("grep", ::grep)
-)
-
-/**
  * Cat file
  * @param args array of arguments
  * @param input stdin
@@ -28,7 +16,7 @@ fun cat(args: Array<String>, input: String): Pair<Int, String> {
         throw ArgumentsException("cat", 1, args.size)
     }
 
-    val file = Environment.readFile(args[0])?: throw FileNotFoundException(args[0])
+    val file = Environment.readFile(args[0]) ?: throw FileNotFoundException(args[0])
     return Pair(0, file)
 }
 
@@ -55,7 +43,7 @@ fun wc(args: Array<String>, input: String): Pair<Int, String> {
  * @return pair of exit code and stdout
  */
 fun pwd(args: Array<String>, input: String): Pair<Int, String> {
-    if (args.size != 0) {
+    if (args.isNotEmpty()) {
         throw ArgumentsException("pwd", 0, args.size)
     }
 
